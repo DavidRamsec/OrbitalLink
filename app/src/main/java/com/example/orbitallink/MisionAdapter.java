@@ -39,7 +39,12 @@ public class MisionAdapter extends RecyclerView.Adapter<MisionAdapter.MisionView
     public void onBindViewHolder(@NonNull MisionAdapter.MisionViewHolder holder, int position) {
         Mision mision = listaElementos.get(position);
 
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(mision));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(mision);
+            }
+        });
 
         holder.tvMision.setText(mision.getMision());
         holder.tvAgencia.setText(mision.getAgencia());

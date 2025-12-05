@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -59,45 +62,69 @@ public class MissionDetailActivity extends AppCompatActivity {
                 .load(misionActual.getPatch())
                 .into(ivPatch);
 
-        btnWeb.setOnClickListener(v -> {
-            Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(misionActual.getWiki()));
-            startActivity(webIntent);
+        btnWeb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(misionActual.getWiki()));
+                startActivity(webIntent);
+            }
         });
 
-        btnShare.setOnClickListener(v -> {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "¡Mira este lanzamiento: " + misionActual.getMision() + " el día " + misionActual.getFecha() + "!");
-            sendIntent.setType("text/plain");
-            startActivity(Intent.createChooser(sendIntent, "Compartir misión"));
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "¡Mira este lanzamiento: " + misionActual.getMision() + " el día " + misionActual.getFecha() + "!");
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Compartir misión"));
+            }
         });
 
-        btnSubscribe.setOnClickListener(v -> {
-            suscribirseLanzamiento();
+        btnSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                suscribirseLanzamiento();
+            }
         });
 
-        btnDownload.setOnClickListener(v -> {
-            descargarParche();
+        btnDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descargarParche();
+            }
         });
     }
+
     private void suscribirseLanzamiento() {
         String url = "http://pabloglezs.es/subscribe.php";
 
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("id_mision", misionActual.getId()); // ID real
-            jsonBody.put("token_usuario", "agente@orbital.link"); // Token simulado
+            jsonBody.put("id_mision", misionActual.getId());
+            jsonBody.put("token_usuario", "agente@orbital.link");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
-                response -> Toast.makeText(this, "¡Suscripción exitosa!", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(MissionDetailActivity.this, "¡Suscripción exitosa!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MissionDetailActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    }
+                }
         );
 
         Volley.newRequestQueue(this).add(request);
     }
+
     private void descargarParche() {
         if (misionActual.getPatch() == null || misionActual.getPatch().isEmpty()) return;
 

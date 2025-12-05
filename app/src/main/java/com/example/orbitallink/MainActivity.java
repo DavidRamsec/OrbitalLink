@@ -64,21 +64,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cargarDatos() {
-        // Usamos el Singleton de Retrofit que creamos
         MiRetrofit.getInstance().getMyApi().obtenerMisiones().enqueue(new Callback<List<Mision>>() {
             @Override
-            public void onResponse(Call<List<Mision>> call, Response<List<Mision>> response) {
+            public void onResponse(@NonNull Call<List<Mision>> call, @NonNull Response<List<Mision>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Limpiamos la lista vieja y añadimos las nuevas misiones
                     listaDeElementos.clear();
                     listaDeElementos.addAll(response.body());
-                    // Avisamos al adaptador de que hay datos nuevos
                     adapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Mision>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Mision>> call, @NonNull Throwable t) {
                 Toast.makeText(MainActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
             }
         });
