@@ -1,8 +1,11 @@
 package com.example.orbitallink;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Mision {
+public class Mision implements Parcelable{
     @SerializedName("id")
     private int id;
     @SerializedName("mision")
@@ -14,18 +17,51 @@ public class Mision {
     @SerializedName("descripcion")
     private String descripcion;
     @SerializedName("rocket_img")
-    private int rocket_img;
+    private String rocket_img;
     @SerializedName("patch_img")
-    private int patch_img;
+    private String patch_img;
     @SerializedName("wiki_url")
     private String wiki_url;
-
-    public Mision(int rocket_img, String mision, String agencia) {
-        this.mision = mision;
-        this.agencia = agencia;
-        this.rocket_img = rocket_img;
+    public Mision() {}
+    protected Mision(Parcel in) {
+        id = in.readInt();
+        mision = in.readString();
+        agencia = in.readString();
+        fecha = in.readString();
+        descripcion = in.readString();
+        rocket_img = in.readString();
+        patch_img = in.readString();
+        wiki_url = in.readString();
     }
 
+    public static final Creator<Mision> CREATOR = new Creator<Mision>() {
+        @Override
+        public Mision createFromParcel(Parcel in) {
+            return new Mision(in);
+        }
+
+        @Override
+        public Mision[] newArray(int size) {
+            return new Mision[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(mision);
+        dest.writeString(agencia);
+        dest.writeString(fecha);
+        dest.writeString(descripcion);
+        dest.writeString(rocket_img);
+        dest.writeString(patch_img);
+        dest.writeString(wiki_url);
+    }
     public int getId() {
         return id;
     }
@@ -46,11 +82,11 @@ public class Mision {
         return descripcion;
     }
 
-    public int getRocket() {
+    public String getRocket() {
         return rocket_img;
     }
 
-    public int getPatch() {
+    public String getPatch() {
         return patch_img;
     }
 

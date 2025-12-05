@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class MisionAdapter extends RecyclerView.Adapter<MisionAdapter.MisionViewHolder>{
@@ -36,15 +38,15 @@ public class MisionAdapter extends RecyclerView.Adapter<MisionAdapter.MisionView
     @Override
     public void onBindViewHolder(@NonNull MisionAdapter.MisionViewHolder holder, int position) {
         Mision mision = listaElementos.get(position);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onItemClick(mision);
-            }
-        });
-        holder.imgMision.setImageResource(mision.getRocket());
+
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(mision));
+
         holder.tvMision.setText(mision.getMision());
         holder.tvAgencia.setText(mision.getAgencia());
+
+        Glide.with(holder.itemView.getContext())
+                .load(mision.getRocket())
+                .into(holder.imgMision);
     }
     @Override
     public int getItemCount() {
