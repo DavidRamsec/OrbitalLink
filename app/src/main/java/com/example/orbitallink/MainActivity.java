@@ -1,12 +1,18 @@
 package com.example.orbitallink;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Orbital Link");
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            solicitarPermisos();
         }
         cargarComponentes();
     }
@@ -94,5 +103,16 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void solicitarPermisos() {
+
+        String[] permisos = {Manifest.permission.POST_NOTIFICATIONS};
+        if(Build.VERSION.SDK_INT >= 33){
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, permisos, 101);
+            }
+        }
     }
 }

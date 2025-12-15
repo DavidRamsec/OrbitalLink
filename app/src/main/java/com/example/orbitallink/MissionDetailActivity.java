@@ -129,10 +129,10 @@ public class MissionDetailActivity extends AppCompatActivity {
         if (misionActual.getPatch() == null || misionActual.getPatch().isEmpty()) return;
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(misionActual.getPatch()));
-        request.setTitle("Parche " + misionActual.getMision());
-        request.setDescription("Descargando...");
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, misionActual.getMision() + ".png");
+        //request.setTitle("Parche " + misionActual.getMision());
+        //request.setDescription("Descargando...");
+        //request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, misionActual.getMision()+System.currentTimeMillis());
 
         DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         if (manager != null) {

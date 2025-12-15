@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -15,6 +16,12 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        long completedId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,-1);
+        DownloadManager managerD = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+
+        Uri uri = managerD.getUriForDownloadedFile(completedId);
+
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
             String channelId = "canal_descargas_orbital";
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -26,8 +33,9 @@ public class DownloadReceiver extends BroadcastReceiver {
             );
             manager.createNotificationChannel(channel);
 
-            Intent i = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setDataAndType(uri,"image/*");
+            i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context,
